@@ -9,6 +9,7 @@ authentication_blueprint = Blueprint('authentication_blueprint', __name__)
 
 @authentication_blueprint.route('/auth/signup', methods=['POST'])
 def signup():
+    connection = None
     try:
         new_user_data = request.get_json()
         connection = get_db_connection()
@@ -27,7 +28,8 @@ def signup():
     except Exception as error:
         return jsonify({"error": str(error)}), 401
     finally:
-        connection.close()
+        if connection:
+            connection.close()
 
 @authentication_blueprint.route('/auth/signin', methods=["POST"])
 def signin():
